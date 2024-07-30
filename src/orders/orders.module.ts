@@ -1,6 +1,7 @@
 import { Module, forwardRef } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { Order } from './entities/order.entity';
+import { OrderProduct } from './entities/order-product.entity'; 
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from 'src/auth/auth.module';
 import { OrdersController } from './orders.controller';
@@ -15,8 +16,9 @@ import { InventoryModule } from '../inventory/inventory.module';
     ConfigModule,
     FirebaseModule,
     UsersModule,
+    OrderProduct,
     InventoryModule,
-    TypeOrmModule.forFeature([Order, User]),
+    TypeOrmModule.forFeature([Order, OrderProduct, User]),
     forwardRef(() => AuthModule),
 
   ],

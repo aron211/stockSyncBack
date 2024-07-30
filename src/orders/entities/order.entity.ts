@@ -14,13 +14,14 @@ import {
 
 import { User } from 'src/users/entities/user.entity';
 import { Inventory } from 'src/inventory/entities/inventory.entity';
+import { OrderProduct } from './order-product.entity';
 
   @Entity()
 export class Order {
     @PrimaryGeneratedColumn('uuid')
     id: string;
   
-    @Column({ unique: true, nullable: false })
+    @Column({ unique: false, nullable: true })
     codigo: string;
 
     @Column({ nullable: true })
@@ -51,4 +52,7 @@ export class Order {
     @ManyToMany(() => Inventory)
     @JoinTable()
     products: Inventory[];
+
+    @OneToMany(() => OrderProduct, orderProduct => orderProduct.order, { cascade: true })
+    orderProducts: OrderProduct[];
 }

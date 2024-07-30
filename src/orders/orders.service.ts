@@ -38,6 +38,9 @@ async createOrder(createOrderDto: CreateOrderDto): Promise<Order> {
       if (!product) {
         throw new BadRequestException(`Product ${p.productId} not found`);
       }
+      if (product.cant < p.quantity) {
+        throw new BadRequestException(`Insufficient quantity for product ${p.productId}`);
+      }
       return { product, quantity: p.quantity };
     })
   );
@@ -57,6 +60,14 @@ async createOrder(createOrderDto: CreateOrderDto): Promise<Order> {
   // Guarda el pedido y las relaciones
   const savedOrder = await this.orderRepository.save(order);
 
+    // Actualiza la cantidad de productos en el inventario
+    await Promise.all(
+      productEntities.map(async ({ product, quantity }) => {
+        product.cant -= quantity;
+        await this.inventoryService.update(product.id, { cant: product.cant });
+      })
+    );
+    
   return this.orderRepository.findOne({
     where: { id: savedOrder.id },
     relations: ['user', 'orderProducts', 'orderProducts.product'],

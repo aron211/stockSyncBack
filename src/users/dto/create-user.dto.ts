@@ -25,7 +25,7 @@ export class CreateUserDto {
   lastname: string;
   
   @Transform(({ value }) => value.trim())
-  @IsString()
+  @IsEmail()
   email: string;
 
   @Transform(({ value }) => value.trim())

@@ -19,7 +19,7 @@ export class InventoryController {
 
   @ApiBearerAuth()
   @Get()
-  @Auth(Role.ADMIN, Role.TECNICHAL)
+  @Auth(Role.ADMIN,Role.USER,Role.TECNICHAL)
   findAll() {
     return this.inventoryService.findAll();
   }

@@ -18,6 +18,7 @@ import { MailsModule } from './mails/mails.module';
 import { ClientModule } from './client/client.module';
 import { InventoryModule } from './inventory/inventory.module';
 import { OrdersModule } from './orders/orders.module';
+import { VendorsModule } from './vendors/vendors.module';
 
 
 
@@ -61,6 +62,7 @@ import { OrdersModule } from './orders/orders.module';
     InventoryModule,
     OrdersModule,
     MailsModule,
+    VendorsModule,
     // EquipsModule
 
   ],

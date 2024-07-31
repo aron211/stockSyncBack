@@ -21,7 +21,7 @@ export class RegisterDto {
   @MinLength(1)
   lastname?: string;
 
-  @IsString()
+  @IsEmail()
   email: string;
 
   @Transform(({ value }) => value.trim())

@@ -39,7 +39,7 @@ export class UsersController {
   ) { }
   @ApiBearerAuth()
   @Post()
-  @Auth(Role.ADMIN,Role.USER)
+  @Auth(Role.ADMIN,Role.USER,Role.TECNICHAL)
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }

@@ -7,8 +7,12 @@ import {
     OneToMany,
     PrimaryGeneratedColumn,
     UpdateDateColumn,
-    Unique
+    Unique,
+    ManyToMany,
+    JoinTable
   } from 'typeorm';
+  import { Client } from 'src/client/entities/client.entity';
+  
   @Entity()
   export class Vendor {
     @PrimaryGeneratedColumn('uuid')
@@ -44,6 +48,9 @@ import {
       onUpdate: 'CURRENT_TIMESTAMP(6)',
     })
     updatedAt: Date;
+    @ManyToMany(() => Client, (client) => client.vendors, { cascade: true })
+    @JoinTable()
+    clients: Client[];
 
 
 }

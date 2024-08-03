@@ -1,12 +1,15 @@
 import {  Injectable,
           BadRequestException,
           UnauthorizedException,
+          NotFoundException
  } from '@nestjs/common';
- import { Repository } from 'typeorm';
- import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 import { CreateVendorDto } from './dto/create-vendor.dto';
+import { CreateClientForVendorDto  } from './dto/create-client-for-vendor.dto';
 import { UpdateVendorDto } from './dto/update-vendor.dto';
 import { Vendor } from './entities/vendor.entity';
+import { Client } from '../client/entities/client.entity';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
@@ -14,6 +17,8 @@ export class VendorsService {
   constructor(
     @InjectRepository(Vendor)
     private readonly vendorRepository: Repository<Vendor>,
+    @InjectRepository(Client)
+    private readonly clientRepository: Repository<Client>,
     private readonly configService: ConfigService,
   ) { }
   create(createVendorDto: CreateVendorDto) {
@@ -32,6 +37,53 @@ export class VendorsService {
     }
     return vendor;
   }
+
+  async addClientToVendor(userId: string, createClientForVendorDto: CreateClientForVendorDto) {
+    console.log(`User ID from token: ${userId}`);
+    const vendor = await this.vendorRepository.findOne({ where: { id: userId } });
+    if (!vendor) {
+        throw new NotFoundException('Vendor not found');
+    }
+
+    let client: Client;
+    if (createClientForVendorDto.clientId) {
+        client = await this.clientRepository.findOneBy({ id: createClientForVendorDto.clientId });
+        if (!client) {
+            throw new NotFoundException('Client not found');
+        }
+    } else {
+        client = this.clientRepository.create(createClientForVendorDto);
+        await this.clientRepository.save(client);
+    }
+
+    vendor.clients = vendor.clients || [];
+    vendor.clients.push(client);
+    return await this.vendorRepository.save(vendor);
+}
+async findClientesByVendedor(vendorId: string): Promise<Vendor> {
+  return this.vendorRepository.findOne({
+    where: { id: vendorId },
+    relations: ['clients'], // Asegúrate de que esto coincida con tu configuración de relaciones en tu entidad
+  });
+}
+async getClientesByCi(ci: string) {
+  return await this.vendorRepository.findOne({
+    where: { ci },
+    relations: ['clients'],
+  });
+}
+// async findClientesByVendedor(vendorId: string): Promise<Vendor> {
+//   const vendor = await this.vendorRepository.findOne({
+//     where: { id: vendorId },
+//     relations: ['clients'], // Asegúrate de que esto coincida con tu configuración de relaciones en tu entidad
+//   });
+
+//   if (!vendor) {
+//     throw new NotFoundException('Vendor not found');
+//   }
+
+//   return vendor;
+// }
   findOneById(id: string) {
     return this.vendorRepository.findOne({ 
       where: { id },

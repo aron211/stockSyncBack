@@ -23,7 +23,7 @@ export class OrdersService {
   ) {}
 
 async createOrder(createOrderDto: CreateOrderDto): Promise<Order> {
-  const { userId, products, ...orderData } = createOrderDto;
+  const { userId, products, priceTotal, codigo, nameCli } = createOrderDto;
 
   // Verifica si el usuario existe
   const user = await this.usersService.findOne(userId);
@@ -47,7 +47,9 @@ async createOrder(createOrderDto: CreateOrderDto): Promise<Order> {
 
   // Crea el pedido
   const order = this.orderRepository.create({
-    ...orderData,
+   priceTotal,
+   codigo: user.rif,
+   nameCli,
     user,
     orderProducts: productEntities.map(({ product, quantity }) => {
       const orderProduct = new OrderProduct();

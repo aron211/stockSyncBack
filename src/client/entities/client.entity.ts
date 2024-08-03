@@ -4,10 +4,12 @@ import {
     DeleteDateColumn,
     Entity,
     OneToMany,
+    ManyToMany,
     PrimaryGeneratedColumn,
     UpdateDateColumn,
     Unique
   } from 'typeorm';
+  import { Vendor } from 'src/vendors/entities/vendor.entity';
   @Entity()
 export class Client{
     @PrimaryGeneratedColumn('uuid')
@@ -43,6 +45,7 @@ export class Client{
       onUpdate: 'CURRENT_TIMESTAMP(6)',
     })
     updatedAt: Date;
-
+    @ManyToMany(() => Vendor, (vendor) => vendor.clients)
+    vendors: Vendor[];
 
 }

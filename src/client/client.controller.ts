@@ -21,7 +21,7 @@ export class ClientController {
 
   @ApiBearerAuth()
   @Get()
-  @Auth(Role.ADMIN)
+  @Auth(Role.ADMIN, Role.TECNICHAL)
   findAll() {
     return this.clientService.findAll();
   }

@@ -13,6 +13,7 @@ import { ClientController } from './client.controller';
     forwardRef(() => AuthModule),
   ],
   controllers: [ClientController],
-  providers: [ClientService]
+  providers: [ClientService],
+  exports: [TypeOrmModule], 
 })
 export class ClientModule {}

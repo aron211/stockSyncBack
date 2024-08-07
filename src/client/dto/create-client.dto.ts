@@ -22,8 +22,9 @@ export class CreateClientDto {
   phone: string;
 
   @IsOptional()
-  @IsEmail()
+  @IsString()
   email: string;
+  // @IsEmail()
 
   @IsOptional()
   @IsString()

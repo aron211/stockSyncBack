@@ -11,8 +11,9 @@ export class CreateVendorDto {
   name: string;
 
   @IsNotEmpty()
-  @IsEmail()
+  @IsString()
   email: string;
+  // @IsEmail()
 
   @IsNotEmpty()
   @IsString()

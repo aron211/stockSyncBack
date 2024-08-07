@@ -8,7 +8,6 @@ export class RegisterDto {
   @IsEnum(Role)
   role: Role;
 
-
   @IsOptional()
   @Transform(({ value }) => value.trim())
   @IsString()
@@ -21,7 +20,8 @@ export class RegisterDto {
   @MinLength(1)
   lastname?: string;
 
-  @IsEmail()
+  // @IsEmail()
+  @IsString()
   email: string;
 
   @Transform(({ value }) => value.trim())

@@ -44,8 +44,13 @@ export class ClientService {
     return this.clientRepository.save(client);
   }
   async findAll() {
-    return await this.clientRepository.find();
-    return `This action returns all client`;
+    // return await this.clientRepository.find();
+    const clients = await this.clientRepository.find({ relations: ['vendor'] });
+    return clients.map(client => ({
+        ...client,
+        vendorId: client.vendor ? client.vendor.id : null,
+    }));
+
   }
 
   findOneByName(name: string) {
@@ -60,8 +65,14 @@ export class ClientService {
         'name',
         'rif',
         'address',
-        'phone'
+        'phone',
+        'email',
+        'descuento',
+        'codven',
+        'createdAt',
+        'updatedAt',
       ],
+      relations: ['vendor'],
      });
     return `This action returns a #${id} client`;
   }

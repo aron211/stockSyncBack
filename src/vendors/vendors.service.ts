@@ -17,12 +17,11 @@ export class VendorsService {
   constructor(
     @InjectRepository(Vendor)
     private readonly vendorRepository: Repository<Vendor>,
-    @InjectRepository(Client)
-    private readonly clientRepository: Repository<Client>,
     private readonly configService: ConfigService,
   ) { }
-  create(createVendorDto: CreateVendorDto) {
-    return this.vendorRepository.save(createVendorDto);
+  async create(createVendorDto: CreateVendorDto): Promise<Vendor> {
+    const vendor = this.vendorRepository.create(createVendorDto);
+    return this.vendorRepository.save(vendor);
   }
 
   async findAll() {
@@ -38,33 +37,39 @@ export class VendorsService {
     return vendor;
   }
 
-  async addClientToVendor(userId: string, createClientForVendorDto: CreateClientForVendorDto) {
-    console.log(`User ID from token: ${userId}`);
-    const vendor = await this.vendorRepository.findOne({ where: { id: userId } });
-    if (!vendor) {
-        throw new NotFoundException('Vendor not found');
-    }
+//   async addClientToVendor(userId: string, createClientForVendorDto: CreateClientForVendorDto) {
+//     console.log(`User ID from token: ${userId}`);
+//     const vendor = await this.vendorRepository.findOne({ where: { id: userId } });
+//     if (!vendor) {
+//         throw new NotFoundException('Vendor not found');
+//     }
 
-    let client: Client;
-    if (createClientForVendorDto.clientId) {
-        client = await this.clientRepository.findOneBy({ id: createClientForVendorDto.clientId });
-        if (!client) {
-            throw new NotFoundException('Client not found');
-        }
-    } else {
-        client = this.clientRepository.create(createClientForVendorDto);
-        await this.clientRepository.save(client);
-    }
+//     let client: Client;
+//     if (createClientForVendorDto.clientId) {
+//         client = await this.clientRepository.findOneBy({ id: createClientForVendorDto.clientId });
+//         if (!client) {
+//             throw new NotFoundException('Client not found');
+//         }
+//     } else {
+//         client = this.clientRepository.create(createClientForVendorDto);
+//         await this.clientRepository.save(client);
+//     }
 
-    vendor.clients = vendor.clients || [];
-    vendor.clients.push(client);
-    return await this.vendorRepository.save(vendor);
-}
-async findClientesByVendedor(vendorId: string): Promise<Vendor> {
-  return this.vendorRepository.findOne({
+//     vendor.clients = vendor.clients || [];
+//     vendor.clients.push(client);
+//     return await this.vendorRepository.save(vendor);
+// }
+async findClientesByVendedor(vendorId: string): Promise<Client[]> {
+  const vendor = await this.vendorRepository.findOne({
     where: { id: vendorId },
-    relations: ['clients'], // Asegúrate de que esto coincida con tu configuración de relaciones en tu entidad
+    relations: ['clients'],
   });
+
+  if (!vendor) {
+      throw new NotFoundException('Vendor not found');
+  }
+
+  return vendor.clients;
 }
 async getClientesByCi(ci: string) {
   return await this.vendorRepository.findOne({

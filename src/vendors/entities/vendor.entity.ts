@@ -18,13 +18,22 @@ import {
     @PrimaryGeneratedColumn('uuid')
     id: string;
   
-    @Column({ unique: true, nullable: false })
-    ci: string;
-  
+    @Column({ unique: true, nullable: true })
+    codven: string;
+    
     @Column({ nullable: false })
     name: string;
 
-    @Column({ nullable: false })
+    @Column({ nullable: true })
+    email: string;
+
+    @OneToMany(() => Client, client => client.vendor)
+    clients: Client[];
+
+    @Column({ nullable: true })
+    ci: string;
+
+    @Column({ nullable: true })
     lastname: string;
 
     @Column({ nullable: true })
@@ -48,9 +57,9 @@ import {
       onUpdate: 'CURRENT_TIMESTAMP(6)',
     })
     updatedAt: Date;
-    @ManyToMany(() => Client, (client) => client.vendors, { cascade: true })
-    @JoinTable()
-    clients: Client[];
+    // @ManyToMany(() => Client, (client) => client.vendors, { cascade: true })
+    // @JoinTable()
+    // clients: Client[];
 
 
 }

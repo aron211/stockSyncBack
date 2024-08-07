@@ -19,19 +19,20 @@ export class VendorsController {
     return this.vendorsService.create(createVendorDto);
   }
 
+  @ApiBearerAuth()
   @Get()
+  @Auth(Role.ADMIN, Role.TECNICHAL)
   findAll() {
     return this.vendorsService.findAll();
   }
-
-  @Get('clientes/:vendorId')
-  async getClientesByVendedor(@Param('vendorId') id: string) {
-    return await this.vendorsService.findClientesByVendedor(id);
-  }
-  @Get('clientes/ci/:ci')
-async getClientesByCi(@Param('ci') ci: string) {
-  return this.vendorsService.getClientesByCi(ci);
-}
+  // @Get('clientes/:vendorId')
+  // async getClientesByVendedor(@Param('vendorId') id: string) {
+  //   return await this.vendorsService.findClientesByVendedor(id);
+  // }
+//   @Get('clientes/ci/:ci')
+// async getClientesByCi(@Param('ci') ci: string) {
+//   return this.vendorsService.getClientesByCi(ci);
+// }
   // async findClientesByVendedor(vendorId: string): Promise<Vendor> {
   //   const vendor = await this.vendorsService.findOne({
   //     where: { id: vendorId },
@@ -45,26 +46,30 @@ async getClientesByCi(@Param('ci') ci: string) {
   findOne(@Param('id') id: string) {
     return this.vendorsService.findOne(id);
   }
-
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateVendorDto: UpdateVendorDto) {
     return this.vendorsService.update(id, updateVendorDto);
   }
-
+  @ApiBearerAuth()
   @Delete(':id')
+  @Auth(Role.ADMIN)
   remove(@Param('id') id: string) {
     return this.vendorsService.remove(id);
+  }
+  @Get(':vendorId/clients')
+  findClientesByVendedor(@Param('vendorId') vendorId: string) {
+    return this.vendorsService.findClientesByVendedor(vendorId);
   }
   // @Post(':id/clients')
   // addClientToVendor(@Param('id') id: string, @Body() createClientForVendorDto: CreateClientForVendorDto) {
   //     return this.vendorsService.addClientToVendor(id, createClientForVendorDto);
   // }
-  @ApiBearerAuth()
-  @Post('clients')
-  @Auth(Role.TECNICHAL, Role.ADMIN) // Asegúrate de que solo usuarios autenticados puedan acceder a este endpoint
-  addClientToVendor(@Req() request: Request, @Body() createClientForVendorDto: CreateClientForVendorDto) {
-    console.log('Request user metofo post in vendor controller:', request.user);
-    const vendorId = request.user.id; // Extrae el ID del usuario desde el request
-    return this.vendorsService.addClientToVendor(vendorId, createClientForVendorDto);
-  }
+  // @ApiBearerAuth()
+  // @Post('clients')
+  // @Auth(Role.TECNICHAL, Role.ADMIN) // Asegúrate de que solo usuarios autenticados puedan acceder a este endpoint
+  // addClientToVendor(@Req() request: Request, @Body() createClientForVendorDto: CreateClientForVendorDto) {
+  //   console.log('Request user metofo post in vendor controller:', request.user);
+  //   const vendorId = request.user.id; // Extrae el ID del usuario desde el request
+  //   return this.vendorsService.addClientToVendor(vendorId, createClientForVendorDto);
+  // }
 }

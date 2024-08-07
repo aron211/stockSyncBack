@@ -1,6 +1,7 @@
 import {  Injectable,
           BadRequestException,
           UnauthorizedException,
+          NotFoundException
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -9,6 +10,7 @@ import * as bcryptjs from 'bcryptjs';
 import { CreateClientDto } from './dto/create-client.dto';
 import { UpdateClientDto } from './dto/update-client.dto';
 import { Client } from './entities/client.entity';
+import { Vendor } from 'src/vendors/entities/vendor.entity';
 import { PatchType } from '../common/enums/patch.enum';
 import { ConfigService } from '@nestjs/config';
 
@@ -17,14 +19,30 @@ export class ClientService {
   constructor(
     @InjectRepository(Client)
     private readonly clientRepository: Repository<Client>,
+    @InjectRepository(Vendor)
+    private readonly vendorRepository: Repository<Vendor>,
     private readonly configService: ConfigService,
   ) { }
 
-  create(createClientDto: CreateClientDto) {
-    return this.clientRepository.save(createClientDto);
-    // return 'This action adds a new client';
-  }
+  // create(createClientDto: CreateClientDto) {
+  //   return this.clientRepository.save(createClientDto);
+  //   // return 'This action adds a new client';
+  // }
+  async create(createClientDto: CreateClientDto): Promise<Client> {
+    const { codven } = createClientDto;
+    const vendor = await this.vendorRepository.findOneBy({ codven });
 
+    if (!vendor) {
+      throw new NotFoundException('Vendor not found');
+    }
+
+    const client = this.clientRepository.create({
+      ...createClientDto,
+      vendor,
+    });
+
+    return this.clientRepository.save(client);
+  }
   async findAll() {
     return await this.clientRepository.find();
     return `This action returns all client`;

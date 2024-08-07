@@ -5,11 +5,14 @@ import { ConfigModule } from '@nestjs/config';
 import { Client } from './entities/client.entity';
 import { ClientService } from './client.service';
 import { ClientController } from './client.controller';
+import { Vendor } from 'src/vendors/entities/vendor.entity';
+import { VendorsModule } from 'src/vendors/vendors.module';
 
 @Module({
   imports:[
     ConfigModule,
-    TypeOrmModule.forFeature([Client]),
+    TypeOrmModule.forFeature([Client, Vendor]),
+    VendorsModule,
     forwardRef(() => AuthModule),
   ],
   controllers: [ClientController],

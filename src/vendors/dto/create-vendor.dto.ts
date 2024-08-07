@@ -4,11 +4,19 @@ import { IsNotEmpty, IsOptional, IsString, IsUUID, IsEmail, } from 'class-valida
 export class CreateVendorDto {
   @IsNotEmpty()
   @IsString()
-  ci: string;
+  codven: string;
 
   @IsNotEmpty()
   @IsString()
   name: string;
+
+  @IsNotEmpty()
+  @IsEmail()
+  email: string;
+
+  @IsNotEmpty()
+  @IsString()
+  ci: string;
 
   @IsNotEmpty()
   @IsString()

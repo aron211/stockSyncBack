@@ -19,6 +19,7 @@ import { ClientModule } from './client/client.module';
 import { InventoryModule } from './inventory/inventory.module';
 import { OrdersModule } from './orders/orders.module';
 import { VendorsModule } from './vendors/vendors.module';
+import { OrderCodeModule } from './order-code/order-code.module';
 
 
 
@@ -63,6 +64,7 @@ import { VendorsModule } from './vendors/vendors.module';
     OrdersModule,
     MailsModule,
     VendorsModule,
+    OrderCodeModule,
     // EquipsModule
 
   ],

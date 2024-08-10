@@ -9,6 +9,7 @@ import { User } from 'src/users/entities/user.entity';
 import { UsersService } from '../users/users.service';
 import { InventoryService } from '../inventory/inventory.service';
 import { Inventory } from '../inventory/entities/inventory.entity';
+import { OrderCodeService } from '../order-code/order-code.service'; // Asegúrate de ajustar la ruta
 
 
 @Injectable()
@@ -19,17 +20,16 @@ export class OrdersService {
     @InjectRepository(OrderProduct)
     private readonly orderProductRepository: Repository<OrderProduct>,
     private readonly usersService: UsersService,
-    private readonly inventoryService: InventoryService
+    private readonly inventoryService: InventoryService,
+    private readonly orderCodeService: OrderCodeService,
   ) {}
 
 async createOrder(createOrderDto: CreateOrderDto): Promise<Order> {
-  const { userId, products, priceTotal, codigo, nameCli } = createOrderDto;
+  const { userEmail, products, priceTotal, codigo, nameCli, cliente, nomCli, rif, comen1, comen2, dtot_ped } = createOrderDto;
 
-  // Verifica si el usuario existe
-  const user = await this.usersService.findOne(userId);
-  if (!user) {
-    throw new BadRequestException('User not found');
-  }
+  // Obtén el codven usando el email del usuario
+  const codven = userEmail;
+
 
   // Verifica si los productos existen y prepara los productos con cantidades
   const productEntities = await Promise.all(
@@ -47,10 +47,16 @@ async createOrder(createOrderDto: CreateOrderDto): Promise<Order> {
 
   // Crea el pedido
   const order = this.orderRepository.create({
-   priceTotal,
-   codigo: user.rif,
-   nameCli,
-    user,
+    priceTotal,
+    codigo,
+    nameCli,
+    cliente,
+    nomCli,
+    rif,
+    codven, // Usa el email directamente como codven
+    comen1,
+    comen2,
+    dtot_ped,
     orderProducts: productEntities.map(({ product, quantity }) => {
       const orderProduct = new OrderProduct();
       orderProduct.product = product;
@@ -62,14 +68,14 @@ async createOrder(createOrderDto: CreateOrderDto): Promise<Order> {
   // Guarda el pedido y las relaciones
   const savedOrder = await this.orderRepository.save(order);
 
-    // Actualiza la cantidad de productos en el inventario
-    await Promise.all(
-      productEntities.map(async ({ product, quantity }) => {
-        product.cant -= quantity;
-        await this.inventoryService.update(product.id, { cant: product.cant });
-      })
-    );
-    
+  // Actualiza la cantidad de productos en el inventario
+  await Promise.all(
+    productEntities.map(async ({ product, quantity }) => {
+      product.cant -= quantity;
+      await this.inventoryService.update(product.id, { cant: product.cant });
+    })
+  );
+
   return this.orderRepository.findOne({
     where: { id: savedOrder.id },
     relations: ['user', 'orderProducts', 'orderProducts.product'],

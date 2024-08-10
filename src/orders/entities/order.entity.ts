@@ -30,6 +30,27 @@ export class Order {
     @Column({ unique: true, nullable: false })
     priceTotal: string;
   
+    @Column()
+    cliente: string;
+
+    @Column()
+    nomCli: string;
+
+    @Column()
+    rif: string;
+
+    @Column()
+    codven: string;
+
+    @Column({ nullable: true })
+    comen1: string;
+
+    @Column({ nullable: true })
+    comen2: string;
+
+    @Column()
+    dtot_ped: string;
+    
     @DeleteDateColumn({ select: false })
     deletedAt: Date;
   

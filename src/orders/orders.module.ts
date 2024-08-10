@@ -10,6 +10,9 @@ import { FirebaseModule } from 'src/firebase/firebase.module';
 import { User } from 'src/users/entities/user.entity';
 import { UsersModule } from '../users/users.module';
 import { InventoryModule } from '../inventory/inventory.module';
+import { OrderCode } from '../order-code/entities/order-code.entity';
+import { OrderCodeService } from '../order-code/order-code.service';
+import { OrderCodeModule } from '../order-code/order-code.module';
 
 @Module({
   imports: [
@@ -18,12 +21,13 @@ import { InventoryModule } from '../inventory/inventory.module';
     UsersModule,
     OrderProduct,
     InventoryModule,
-    TypeOrmModule.forFeature([Order, OrderProduct, User]),
+    OrderCodeModule,
+    TypeOrmModule.forFeature([Order, OrderProduct, User, OrderCode]),
     forwardRef(() => AuthModule),
 
   ],
   controllers: [OrdersController],
-  providers: [OrdersService],
-  exports: [OrdersService],
+  providers: [OrdersService,OrderCodeService],
+  exports: [OrdersService,OrderCodeService],
 })
 export class OrdersModule {}

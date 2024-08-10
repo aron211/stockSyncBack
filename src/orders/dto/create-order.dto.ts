@@ -11,7 +11,7 @@ class ProductQuantityDto {
 }
 
 export class CreateOrderDto {
-    @IsNotEmpty()
+    @IsOptional()
     @IsString()
     codigo: string;
   
@@ -23,12 +23,44 @@ export class CreateOrderDto {
     @IsString()
     priceTotal: string;
 
+    // @IsNotEmpty()
+    // @IsUUID()
+    // userId: string;
+
     @IsNotEmpty()
-    @IsUUID()
-    userId: string;
+    @IsString()
+    userEmail: string;
 
     @IsArray()
     @ValidateNested({ each: true })
     @Type(() => ProductQuantityDto)
     products: ProductQuantityDto[];
+
+    @IsNotEmpty()
+    @IsString()
+    cliente: string;
+
+    @IsNotEmpty()
+    @IsString()
+    nomCli: string;
+
+    @IsNotEmpty()
+    @IsString()
+    rif: string;
+
+    @IsNotEmpty()
+    @IsString()
+    codven: string;
+
+    @IsOptional()
+    @IsString()
+    comen1?: string;
+
+    @IsOptional()
+    @IsString()
+    comen2?: string;
+
+    @IsNotEmpty()
+    @IsString()
+    dtot_ped: string;
 }

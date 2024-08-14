@@ -25,11 +25,13 @@ export class OrdersService {
   ) {}
 
 async createOrder(createOrderDto: CreateOrderDto): Promise<Order> {
-  const { userEmail, products, priceTotal, codigo, nameCli, cliente, nomCli, rif, comen1, comen2, dtot_ped } = createOrderDto;
+  const { userEmail, products, priceTotal, nameCli, cliente, nomCli, rif, comen1, comen2, status, dtot_ped } = createOrderDto;
 
   // Obtén el codven usando el email del usuario
   const codven = userEmail;
 
+  // Genera el código automáticamente usando el OrderCodeService
+  const codigo = await this.orderCodeService.getNextCode();
 
   // Verifica si los productos existen y prepara los productos con cantidades
   const productEntities = await Promise.all(
@@ -47,8 +49,8 @@ async createOrder(createOrderDto: CreateOrderDto): Promise<Order> {
 
   // Crea el pedido
   const order = this.orderRepository.create({
-    priceTotal,
     codigo,
+    priceTotal,
     nameCli,
     cliente,
     nomCli,
@@ -56,6 +58,7 @@ async createOrder(createOrderDto: CreateOrderDto): Promise<Order> {
     codven, // Usa el email directamente como codven
     comen1,
     comen2,
+    status,
     dtot_ped,
     orderProducts: productEntities.map(({ product, quantity }) => {
       const orderProduct = new OrderProduct();

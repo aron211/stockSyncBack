@@ -11,9 +11,9 @@ class ProductQuantityDto {
 }
 
 export class CreateOrderDto {
-    @IsOptional()
-    @IsString()
-    codigo: string;
+    // @IsOptional()
+    // @IsString()
+    // codigo?: string;
   
     @IsNotEmpty()
     @IsString()
@@ -59,6 +59,10 @@ export class CreateOrderDto {
     @IsOptional()
     @IsString()
     comen2?: string;
+
+    @IsOptional()
+    @IsString()
+    status?: string;
 
     @IsNotEmpty()
     @IsString()

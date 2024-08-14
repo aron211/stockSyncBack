@@ -13,11 +13,13 @@ export class OrderCodeService {
     
   ) {}  
   async getNextCode(): Promise<string> {
-    const lastOrderCode = await this.orderCodeRepository.findOne({
-      order: { id: 'DESC' },
+    const lastOrderCode = await this.orderCodeRepository.find({
+      order: { code: 'DESC' },
+      take: 1,
     });
-    const lastCode = lastOrderCode ? lastOrderCode.code : '00000000';
+    const lastCode = lastOrderCode.length > 0 ? lastOrderCode[0].code : '00000000';
     const nextCode = (parseInt(lastCode, 10) + 1).toString().padStart(8, '0');
+    await this.saveCode(nextCode);
     return nextCode;
   }
 

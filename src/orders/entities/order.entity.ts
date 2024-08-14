@@ -21,18 +21,18 @@ export class Order {
     @PrimaryGeneratedColumn('uuid')
     id: string;
   
-    @Column({ unique: false, nullable: true })
+    @Column({ unique: true, nullable: false })
     codigo: string;
 
     @Column({ nullable: true })
     nameCli: string;
   
-    @Column({ unique: true, nullable: false })
+    @Column({nullable: false })
     priceTotal: string;
   
     @Column()
     cliente: string;
-
+    
     @Column()
     nomCli: string;
 
@@ -47,6 +47,9 @@ export class Order {
 
     @Column({ nullable: true })
     comen2: string;
+    
+    @Column({ nullable: true })
+    status: string;
 
     @Column()
     dtot_ped: string;

@@ -9,14 +9,15 @@ import { User } from 'src/users/entities/user.entity';
 import { UsersService } from '../users/users.service';
 import { InventoryService } from '../inventory/inventory.service';
 import { Inventory } from '../inventory/entities/inventory.entity';
-import { OrderCodeService } from '../order-code/order-code.service'; // Asegúrate de ajustar la ruta
-
+import { OrderCodeService } from '../order-code/order-code.service';
+import { MailsService } from '../mails/mails.service';
 
 @Injectable()
 export class OrdersService {
   constructor(
     @InjectRepository(Order)
     private readonly orderRepository: Repository<Order>,
+    private readonly mailsService: MailsService,
     @InjectRepository(OrderProduct)
     private readonly orderProductRepository: Repository<OrderProduct>,
     private readonly usersService: UsersService,
@@ -70,6 +71,17 @@ async createOrder(createOrderDto: CreateOrderDto): Promise<Order> {
 
   // Guarda el pedido y las relaciones
   const savedOrder = await this.orderRepository.save(order);
+
+      // Enviar el correo después de crear la orden
+      await this.mailsService.sendClaimVerificationEmail({
+        email: 'Josuesandoval1908@gmail.com',
+        claimDetails: {
+          title: `¡¡¡NUEVO PEDIDO!!! `, // o algún otro título relevante
+          description: `Haz recibido un nuevo pedido del cliente ${savedOrder.nameCli} cuyo monto total es: ${savedOrder.priceTotal} 
+          Puedes verificar su existencia en el sistema local con el código ${savedOrder.codigo} para cargarlo y continuar el proceso.`,
+          createdAt: new Date(),
+        },
+      });
 
   // Actualiza la cantidad de productos en el inventario
   await Promise.all(

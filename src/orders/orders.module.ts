@@ -13,6 +13,8 @@ import { InventoryModule } from '../inventory/inventory.module';
 import { OrderCode } from '../order-code/entities/order-code.entity';
 import { OrderCodeService } from '../order-code/order-code.service';
 import { OrderCodeModule } from '../order-code/order-code.module';
+import { MailsService } from '../mails/mails.service';
+import { MailsModule } from '../mails/mails.module';
 
 @Module({
   imports: [
@@ -22,6 +24,7 @@ import { OrderCodeModule } from '../order-code/order-code.module';
     OrderProduct,
     InventoryModule,
     OrderCodeModule,
+    MailsModule,
     TypeOrmModule.forFeature([Order, OrderProduct, User, OrderCode]),
     forwardRef(() => AuthModule),
 

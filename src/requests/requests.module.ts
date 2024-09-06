@@ -1,7 +1,7 @@
 import { Module, forwardRef } from '@nestjs/common';
 import { RequestsService } from './requests.service';
 import { Request } from './entities/request.entity';
-import { TypeOrmModule } from '@nestjs/typeorm';
+// import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from 'src/auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { FirebaseModule } from 'src/firebase/firebase.module';
@@ -19,7 +19,7 @@ import { Equip } from 'src/equips/entities/equip.entity';
   imports: [
     ConfigModule,
     FirebaseModule,
-    TypeOrmModule.forFeature([Request, Service, User, Equip, Client, Inventory]),
+    // TypeOrmModule.forFeature([Request, Service, User, Equip, Client, Inventory]),
     forwardRef(() => AuthModule),
 
   ],

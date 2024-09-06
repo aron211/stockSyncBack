@@ -19,8 +19,8 @@ async function bootstrap() {
   );
 
   const config = new DocumentBuilder()
-    .setTitle('VitalFix ')
-    .setDescription('vitalfix Equipos Medicos')
+    .setTitle('stockSync ')
+    .setDescription('stocksync sistema de pedidos')
     .setVersion('1.0')
     .addBearerAuth()
     .build();

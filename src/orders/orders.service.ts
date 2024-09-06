@@ -74,7 +74,7 @@ async createOrder(createOrderDto: CreateOrderDto): Promise<Order> {
 
       // Enviar el correo después de crear la orden
       await this.mailsService.sendClaimVerificationEmail({
-        email: 'Josuesandoval1908@gmail.com',
+        email: 'aaronsandoval16@gmail.com',
         claimDetails: {
           title: `¡¡¡NUEVO PEDIDO!!! `, // o algún otro título relevante
           description: `Haz recibido un nuevo pedido del cliente ${savedOrder.nameCli} cuyo monto total es: ${savedOrder.priceTotal} 

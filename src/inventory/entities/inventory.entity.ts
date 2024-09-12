@@ -14,13 +14,13 @@ export class Inventory {
     @PrimaryGeneratedColumn('uuid')
     id: string;
   
-    @Column({ nullable: false })
+    @Column({unique: true, nullable: false })
     codigo: string;
   
-    @Column({ nullable: false })
+    @Column({ nullable: true })
     name: string;
   
-    @Column({nullable: false })
+    @Column({nullable: true })
     marca: string;
     
     @Column()
@@ -32,7 +32,7 @@ export class Inventory {
     @Column({ type: 'float', nullable: true })
     priceM: number;
     
-    @Column({nullable: false })
+    @Column({nullable: true })
     country: string;
   
     @DeleteDateColumn({ select: false })

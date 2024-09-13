@@ -31,6 +31,15 @@ async createOrder(createOrderDto: CreateOrderDto): Promise<Order> {
   // Obtén el codven usando el email del usuario
   const codven = userEmail;
 
+  // Obtén el usuario usando el email del usuario
+  const user = await this.usersService.findOneByEmail(userEmail);
+  if (!user) {
+    throw new NotFoundException(`User with email ${userEmail} not found`);
+  }
+
+  // Obtén el rol del usuario
+  const roleUser = user.role;
+
   // Genera el código automáticamente usando el OrderCodeService
   const codigo = await this.orderCodeService.getNextCode();
 
@@ -47,7 +56,14 @@ async createOrder(createOrderDto: CreateOrderDto): Promise<Order> {
       return { product, quantity: p.quantity };
     })
   );
-
+  //asigna tipo de cliente dependiendo el rol del user logueado
+  let tipeClient: string;
+  if(roleUser==="tecnico"){
+    tipeClient = "Vendedor"
+  }
+  else if(roleUser==="user"){
+    tipeClient = "Cliente"
+  }
   // Crea el pedido
   const order = this.orderRepository.create({
     codigo,
@@ -72,16 +88,32 @@ async createOrder(createOrderDto: CreateOrderDto): Promise<Order> {
   // Guarda el pedido y las relaciones
   const savedOrder = await this.orderRepository.save(order);
 
+  const formattedPriceTotal = parseFloat(savedOrder.priceTotal).toFixed(2);
       // Enviar el correo después de crear la orden
+    if(tipeClient==="Vendedor"){
       await this.mailsService.sendClaimVerificationEmail({
         email: 'aaronsandoval16@gmail.com',
         claimDetails: {
-          title: `¡¡¡NUEVO PEDIDO!!! `, // o algún otro título relevante
+          title: `¡¡¡NUEVO PEDIDO!!! `,
+          description: `Haz recibido un nuevo pedido del Vendedor 
+          código nro: ${savedOrder.codven} para el cliente ${savedOrder.nameCli}
+          cuyo monto total es: ${formattedPriceTotal} BS Puedes verificar su existencia
+          en el sistema local con el código ${savedOrder.codigo} para cargarlo y continuar el proceso.`,
+          createdAt: new Date(),
+        },
+      });
+    }
+    else if(tipeClient==="Cliente"){
+      await this.mailsService.sendClaimVerificationEmail({
+        email: 'aaronsandoval16@gmail.com',
+        claimDetails: {
+          title: `¡¡¡NUEVO PEDIDO!!! `,
           description: `Haz recibido un nuevo pedido del cliente ${savedOrder.nameCli} cuyo monto total es: ${savedOrder.priceTotal} 
           Puedes verificar su existencia en el sistema local con el código ${savedOrder.codigo} para cargarlo y continuar el proceso.`,
           createdAt: new Date(),
         },
       });
+    }
 
   // Actualiza la cantidad de productos en el inventario
   await Promise.all(

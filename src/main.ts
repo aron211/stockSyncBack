@@ -10,6 +10,9 @@ async function bootstrap() {
   });
   app.setGlobalPrefix('api/v1');
 
+  //add enable cors
+  app.enableCors();
+
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
